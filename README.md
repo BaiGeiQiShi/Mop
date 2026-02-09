@@ -1,9 +1,9 @@
-# Moss
-Moss is a multi-granularity, multi-objective program debloating technique. Moss supports an objective function that quantifies three objectives: size reduction, attack surface reduction, and generality. It leverages a Markov Chain Monte Carlo (MCMC) sampling algorithm to search for a debloated program with the highest objective function value.
+# Mop
+Mop is a multi-granularity, multi-objective program debloating technique. Mop supports an objective function that quantifies three objectives: size reduction, attack surface reduction, and generality. It leverages a Markov Chain Monte Carlo (MCMC) sampling algorithm to search for a debloated program with the highest objective function value.
 
 ### Note:
-Moss starts debloating from the source file with all the code unexercised by the oracle inputs eliminated. 
-This makes Moss's search space significantly smaller. 
+Mop starts debloating from the source file with all the code unexercised by the oracle inputs eliminated. 
+This makes Mop's search space significantly smaller. 
 We use [debcov](https://github.com/qixin5/debcov) to produce such a file. To use debcov conveniently in our experiments, we renamed it to cov and integrated it into this repository.
 
 
@@ -27,15 +27,15 @@ Use the `Dockerfile` in `./Docker` to create the docker image.
 **Note:** Before using the `Dockerfile`, you can change the parallelism of `make -j` in line 32 of `Dockerfile` according to the number of CPUs available on your device. This is because building LLVM can take several hours, and using multiple CPUs in parallel can reduce this time.
 
 ```shell
-docker build -t moss-env .
+docker build -t mop-env .
 ```
 
-This docker image includes **Moss**, **Moss Benchmark**, **CMake**, **JDK 1.8**, **ROPgadget**, **spdlog**, **Clang && LLVM**, **Postgresql-12.14**, and other essential requirements.
+This docker image includes **Mop**, **Mop Benchmark**, **CMake**, **JDK 1.8**, **ROPgadget**, **spdlog**, **Clang && LLVM**, **Postgresql-12.14**, and other essential requirements.
 
 ### 2.2 Create and run the container with this image
 
 ```shell
-docker run -dit --cap-add LINUX_IMMUTABLE --name moss moss-env /bin/bash
+docker run -dit --cap-add LINUX_IMMUTABLE --name mop mop-env /bin/bash
 ```
 
 ### 2.3 Build Dependencies
@@ -60,7 +60,7 @@ chmod -R a+rw src && cp -r /postgresql-12.14 /tmp/postgresql-12.14
 ```
 
 ### Note:
-1. Currently, we have implemented two versions of Moss for single-file and multi-file debloating. In each version, you need to seperately install two tools in two folders (i.e., ```CovBlock_Stmt``` and ```CovPath```).
+1. Currently, we have implemented two versions of Mop for single-file and multi-file debloating. In each version, you need to seperately install two tools in two folders (i.e., ```CovBlock_Stmt``` and ```CovPath```).
 3. If you move the path of LLVM, you need to change the CMakeLists.txt in ```CovBlock_Stmt``` and ```CovPath```. In CMakeLists.txt, you should change the last two lines of `include_directories` (lines ending with "Change to your own path!") to your own paths.
 4. To compile ```CovPath``` manually, you should run:
 ```
@@ -86,14 +86,14 @@ Run the test experiment to ensure your environment is correct. This command take
 cd ./quicktest
 python3 start_debloat.py
 ```
-After running, check that you have three `moss-out` directories containing the sample C files and three debloating logs (end with `.txt`) in `./log`. These logs should show that Moss generated **1** sample at each stage. If you've found all these, the running was successful.
+After running, check that you have three `mop-out` directories containing the sample C files and three debloating logs (end with `.txt`) in `./log`. These logs should show that Mop generated **1** sample at each stage. If you've found all these, the running was successful.
 
 
 ## 4. Usage
 ```
-MOSS_BIN [OPTION] ORACLE_FILE SOURCE_FILE
+MOP_BIN [OPTION] ORACLE_FILE SOURCE_FILE
 ```
-**MOSS_BIN**: The Moss binary (CovPath or CovBlock_Stmt).
+**MOP_BIN**: The Mop binary (CovPath or CovBlock_Stmt).
 
 **ORACLE_FILE**: The oracle script used to compile source, run tests, and compute scores. It should compute a total of six scores:
 1. Size of original program.
@@ -133,7 +133,7 @@ MOSS_BIN [OPTION] ORACLE_FILE SOURCE_FILE
 -a: Alpha value (weight for attack surface reduction)
 -e: Beta value (weight for generality)
 -k: K value (for computing density values)
--s: If use this option, Moss will save each generated sample program
+-s: If use this option, Mop will save each generated sample program
 -F: If you want to use MCMC at the CovBlock level, add this option, and you must specify the coverage info file following this option
 -M: If you want to use MCMC at the Statement level with unequal select probability, add this option, and you must specify the coverage info file following this option
 -I: A file that indicates the must-handle inputs.
@@ -142,21 +142,21 @@ MOSS_BIN [OPTION] ORACLE_FILE SOURCE_FILE
 ```
 
 ### Note:
-We also integrated Debop into Moss. If you don't use either the -F option or the -M option, the default setting of CovBloct_Stmt is Debop.
+We also integrated Debop into Mop. If you don't use either the -F option or the -M option, the default setting of CovBloct_Stmt is Debop.
 
 
 ## 5. Reproduce our experiments
-In the docker container, we have cloned the Moss benchmark. To reproduce our experiments, you can execute the following cli command:
+In the docker container, we have cloned the Mop benchmark. To reproduce our experiments, you can execute the following cli command:
 
 ``` shell
 ## To debloat 25 single-file programs
 # 1.Choose an arbitrary program (from 25 programs) to debloat
-cd /MossBenchmark/$PROGRAM
+cd /MopBenchmark/$PROGRAM
 
-# 2.Run Moss without must-handle inputs
+# 2.Run Mop without must-handle inputs
 python3 start_debloat.py
 
-# 3.Run Moss with must-handle inputs
+# 3.Run Mop with must-handle inputs
 python3 start_debloat_must.py
 
 # 4.Run Debop
@@ -166,18 +166,18 @@ python3 start_debloat_debop.py
 python3 start_debloat_debopm.py
 
 # 6.Run the ablation experiment
-python3 start_debloat-s12.py  #Moss-s1,2
-python3 start_debloat-s13.py  #Moss-s1,3
-python3 start_debloat-s23.py  #Moss-s2,3
+python3 start_debloat-s12.py  #Mop-s1,2
+python3 start_debloat-s13.py  #Mop-s1,3
+python3 start_debloat-s23.py  #Mop-s2,3
 
 ## To debloat PostgreSQL, you need to use this following command instead. Since PostgreSQL can only be executed under the postgresql user, we created a separate copy of PostgreSQL in the root directory to facilitate file permission modifications.
 # 1.Change the directory to debloat
 cd /postgresql-12.14
 
-# 2.Run Moss without must-handle inputs
+# 2.Run Mop without must-handle inputs
 ./start_debloat
 
-# 3.Run Moss with must-handle inputs
+# 3.Run Mop with must-handle inputs
 ./start_debloat_must
 
 # 4.Run Debop
@@ -187,15 +187,15 @@ cd /postgresql-12.14
 ./start_debloat_debopm
 
 # 6.Run the ablation experiment
-./start_debloat-s12  #Moss-s1,2
-./start_debloat-s13  #Moss-s1,3
-./start_debloat-s23  #Moss-s2,3
+./start_debloat-s12  #Mop-s1,2
+./start_debloat-s13  #Mop-s1,3
+./start_debloat-s23  #Mop-s2,3
 ```
 
 ### Note:
-Since Chisel and Razor need to specify the test cases that must be handled, and this depends on which test cases the debloated program generated by Moss can handle, please follow [here](https://github.com/BaiGeiQiShi/MossBenchmark/blob/main/scripts/README.md) to configure your oracle and then run `./run_chisel` and `./run_razor`.
+Since Chisel and Razor need to specify the test cases that must be handled, and this depends on which test cases the debloated program generated by Mop can handle, please follow [here](https://github.com/BaiGeiQiShi/MopBenchmark/blob/main/scripts/README.md) to configure your oracle and then run `./run_chisel` and `./run_razor`.
 
-If you want to know more details about the benchmark, please refer to [MossBenchmark](https://github.com/BaiGeiQiShi/MossBenchmark).
+If you want to know more details about the benchmark, please refer to [MopBenchmark](https://github.com/BaiGeiQiShi/MopBenchmark).
 
 
 ## Contact
