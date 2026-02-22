@@ -1,5 +1,5 @@
 # Mop
-Mop is a multi-granularity, multi-objective program debloating technique. Mop supports an objective function that quantifies three objectives: size reduction, attack surface reduction, and generality. It leverages a Markov Chain Monte Carlo (MCMC) sampling algorithm to search for a debloated program with the highest objective function value.
+Mop is a multi-granularity, optimization-based program debloating technique. Mop supports an objective function that quantifies three objectives: size reduction, attack surface reduction, and generality. It leverages a Markov Chain Monte Carlo (MCMC) sampling algorithm to search for a debloated program with the highest objective function value.
 
 ### Note:
 Mop starts debloating from the source file with all the code unexercised by the oracle inputs eliminated. 
@@ -142,7 +142,7 @@ MOP_BIN [OPTION] ORACLE_FILE SOURCE_FILE
 ```
 
 ### Note:
-We also integrated Debop into Mop. If you don't use either the -F option or the -M option, the default setting of CovBloct_Stmt is Debop.
+We also integrated Debop into Mop. If neither the -F option nor the -M option is specified, the default setting of CovBloct_Stmt is Debop.
 
 
 ## 5. Reproduce our experiments
