@@ -46,35 +46,35 @@ ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 RUN wget https://github.com/gabime/spdlog/archive/refs/tags/v1.9.2.tar.gz && \
     tar -xf v1.9.2.tar.gz && mv spdlog-1.9.2/include/spdlog /usr/include/
 
-# Clone Moss
+# Clone Mop
 WORKDIR /usr/local/
-RUN git clone https://github.com/BaiGeiQiShi/Moss.git && \
-    cp -r /usr/local/Moss/logger/* /usr/local/bin/
+RUN git clone https://github.com/BaiGeiQiShi/Mop.git && \
+    cp -r /usr/local/Mop/logger/* /usr/local/bin/
 
-# Build Moss
-WORKDIR /usr/local/Moss
-RUN mkdir -p /usr/local/Moss/multiFiles/CovBlock_Stmt/build && cd /usr/local/Moss/multiFiles/CovBlock_Stmt/build && cmake .. && make && \
-    chmod 755 /usr/local/Moss/multiFiles/CovBlock_Stmt/build/lib/wrappers/* && \
-    mkdir -p /usr/local/Moss/multiFiles/CovPath/build && cd /usr/local/Moss/multiFiles/CovPath/build && cmake .. && make && \
-    chmod 755 /usr/local/Moss/multiFiles/CovPath/build/lib/wrappers/* && \
-    cd /usr/local/Moss/multiFiles/CovPath && chmod 755 ./compile_java  && ./compile_java
+# Build Mop
+WORKDIR /usr/local/Mop
+RUN mkdir -p /usr/local/Mop/multiFiles/CovBlock_Stmt/build && cd /usr/local/Mop/multiFiles/CovBlock_Stmt/build && cmake .. && make && \
+    chmod 755 /usr/local/Mop/multiFiles/CovBlock_Stmt/build/lib/wrappers/* && \
+    mkdir -p /usr/local/Mop/multiFiles/CovPath/build && cd /usr/local/Mop/multiFiles/CovPath/build && cmake .. && make && \
+    chmod 755 /usr/local/Mop/multiFiles/CovPath/build/lib/wrappers/* && \
+    cd /usr/local/Mop/multiFiles/CovPath && chmod 755 ./compile_java  && ./compile_java
 
-RUN mkdir -p /usr/local/Moss/singleFile/CovBlock_Stmt/build && cd /usr/local/Moss/singleFile/CovBlock_Stmt/build && cmake .. && make && \
-    chmod 755 /usr/local/Moss/singleFile/CovBlock_Stmt/build/lib/wrappers/* && \
-    mkdir -p /usr/local/Moss/singleFile/CovPath/build && cd /usr/local/Moss/singleFile/CovPath/build && cmake .. && make && \
-    chmod 755 /usr/local/Moss/singleFile/CovPath/build/lib/wrappers/* && \
-    cd /usr/local/Moss/singleFile/CovPath && chmod 755 ./compile_java  && ./compile_java
+RUN mkdir -p /usr/local/Mop/singleFile/CovBlock_Stmt/build && cd /usr/local/Mop/singleFile/CovBlock_Stmt/build && cmake .. && make && \
+    chmod 755 /usr/local/Mop/singleFile/CovBlock_Stmt/build/lib/wrappers/* && \
+    mkdir -p /usr/local/Mop/singleFile/CovPath/build && cd /usr/local/Mop/singleFile/CovPath/build && cmake .. && make && \
+    chmod 755 /usr/local/Mop/singleFile/CovPath/build/lib/wrappers/* && \
+    cd /usr/local/Mop/singleFile/CovPath && chmod 755 ./compile_java  && ./compile_java
 
-# Clone MossBenchmark
+# Clone MopBenchmark
 WORKDIR /
-RUN git clone https://github.com/BaiGeiQiShi/MossBenchmark.git
+RUN git clone https://github.com/BaiGeiQiShi/MopBenchmark.git
 
 # Build cov
-WORKDIR /usr/local/Moss/cov
+WORKDIR /usr/local/Mop/cov
 RUN chmod 755 setenv && chmod 755 compile.sh && ./compile.sh && ./setenv && chmod 755 bin/*
 
 # Build debdce
-WORKDIR /usr/local/Moss/debdce
+WORKDIR /usr/local/Mop/debdce
 RUN mkdir -p build && cd build && cmake .. && make
 
 # Add user for chown-8.2
@@ -84,7 +84,7 @@ RUN groupadd mychown && \
 
 # Setup for postgresql
 WORKDIR /
-RUN cp -r /MossBenchmark/postgresql-12.14 /postgresql-12.14 && \
+RUN cp -r /MopBenchmark/postgresql-12.14 /postgresql-12.14 && \
 		adduser postgres && \
 		passwd -d postgres
 
